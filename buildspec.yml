@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  variables:
+    key: "value"
+    key: "value"
+            
+phases:
+  install:
+    commands:
+      - pip install falcon
+      - pip install gunicorn
+      - pip install pylint
+  build:
+    commands:
+      - pylint buggworks
+      - pylint test
+      - python -m unittest discover
+  post_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION)
+      - docker build -t buggworks . 
+      - docker tag buggworks:latest 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:latest
+      - docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:latest
+artifacts:
+  files:
+    - '**/**'
+  discard-paths: no
