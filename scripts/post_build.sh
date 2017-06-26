@@ -1,6 +1,11 @@
 #!/bin/bash
 
-set -e
+set -o errexit
+set -o nounset
+# set -o xtrace
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR/..
 
 $(aws ecr get-login --region $AWS_DEFAULT_REGION)
 chmod +x version.cfg
