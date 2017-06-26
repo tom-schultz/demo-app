@@ -2,6 +2,8 @@
 
 set -e
 
+pwd
+ls
 chmod +x version.cfg
 . version.cfg && bumpverison --current-version $VERSION minor version.cfg
 pylint buggworks
