@@ -10,17 +10,22 @@ phases:
     commands:
       - pip install falcon
       - pip install pylint
+      - pip install bumpversion
   pre_build:
     commands:
+      - source version.cfg && bumpverison --current-version $VERSION minor version.cfg
       - pylint buggworks
       - pylint test
       - python -m unittest discover
   post_build:
     commands:
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION)
-      - docker build -t buggworks . 
+      - source version.cfg
+      - docker build -t buggworks -t buggworks:$VERSION . 
       - docker tag buggworks:latest 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:latest
+      - docker tag buggworks:$VERSION 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:$VERSION
       - docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:latest
+      - docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:$VERSION
 artifacts:
   files:
     - '**/**'
