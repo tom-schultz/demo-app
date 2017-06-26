@@ -8,7 +8,10 @@ env:
 phases:
   install:
     commands:
-      - sh ./scripts/install.sh
+      - chmod +x ./scripts/install.sh
+      - chmod +x ./scripts/pre_build.sh
+      - chmod +x ./scripts/post_build.sh
+      - ./scripts/install.sh
   pre_build:
     commands:
       - sh ./scripts/pre_build.sh
