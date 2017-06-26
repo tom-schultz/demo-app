@@ -14,10 +14,10 @@ phases:
       - ./scripts/install.sh
   pre_build:
     commands:
-      - sh ./scripts/pre_build.sh
+      - ./scripts/pre_build.sh
   post_build:
     commands:
-      - sh ./scripts/post_build.sh
+      - ./scripts/post_build.sh
 artifacts:
   files:
     - '**/**'
