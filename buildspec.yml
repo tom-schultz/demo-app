@@ -9,9 +9,8 @@ phases:
   install:
     commands:
       - pip install falcon
-      - pip install gunicorn
       - pip install pylint
-  build:
+  pre_build:
     commands:
       - pylint buggworks
       - pylint test
