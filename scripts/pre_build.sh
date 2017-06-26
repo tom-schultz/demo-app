@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
 chmod +x version.cfg
-. version.cfg && bumpverison --current-version $VERSION minor version.cfg
+. version.cfg && bumpversion --current-version $VERSION minor version.cfg
 pylint buggworks
 pylint test
 python -m unittest discover
