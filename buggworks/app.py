@@ -21,5 +21,13 @@ class QuoteResource(object):
         self.req = req
         resp.status = '200 OK'
 
+class HealthCheck(object):
+    """ Class for health check. """
+
+    def on_get(self, req, resp):
+        """ Health check """
+        resp.status = '200 OK'
+
 API = falcon.API()
-API.add_route('/quote', QuoteResource())# sample.py
+API.add_route('/quote', QuoteResource())
+API.add_route('/health', HealthCheck())
