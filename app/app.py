@@ -1,22 +1,38 @@
-""" """
+""" Demo app """
 import json
 import falcon
+import boto3
+from botocore.exceptions import ClientError
 
-class QuoteResource(object):
-    """Sample class for API"""
+class TripResource(object):
+    """ Handling the trip route """
 
-    quote = {
-        'quote': 'I\'ve always been less interested in the future than in the past.',
-        'author': 'Grace Hopper'
-    }
-
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, user_id, trip_id):
         """Handles GET requests"""
-        resp.body = json.dumps(self.quote)
+        try:
+            ddb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = ddb.Table('octank-demo-user-trips')
+            response = table.get_item(Key={'user_id': user_id})
+        except ClientError as exception:
+            resp.status_code = falcon.HTTP_404
+            resp.body = exception.response['Error']['Message']
+        else:
+            item = response['Item']
+            resp.body = json.dumps(item)
 
-    def on_post(self, req, resp):
-        """ Set the quote. """
-        self.quote = {'quote': 'New quote!', 'author': 'Tom Schultz'}
+class TripsResource(object):
+    """ Handling the trips route """
+    def get_trips(self, req, resp, user_id):
+        """Handles GET requests"""
+        try:
+            ddb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = ddb.Table('octank-demo-user-trips')
+            response = table.scan()
+        except ClientError as exception:
+            resp.status_code = falcon.HTTP_404
+            resp.body = exception.response['Error']['Message']
+        else:
+            resp.body = json.dumps(response['Items'])
 
 class HealthCheck(object):
     """ Class for health check. """
@@ -26,5 +42,6 @@ class HealthCheck(object):
         resp.status = '200 OK'
 
 API = falcon.API()
-API.add_route('/quote', QuoteResource())
+API.add_route('/{user_id}/trip/{trip_id}', TripResource())
+API.add_route('/{user_id}/trips', TripsResource())
 API.add_route('/health', HealthCheck())
