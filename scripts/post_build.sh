@@ -15,3 +15,4 @@ docker tag buggworks:latest 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggwor
 docker tag buggworks:$VERSION 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:$VERSION
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:latest
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/buggworks:$VERSION
+echo "{'version': '$VERSION'}" > build.json
