@@ -22,11 +22,25 @@ class TripResource(object):
 
 class TripsResource(object):
     """ Handling the trips route """
-    def get_trips(self, req, resp, user_id):
+    def on_get(self, req, resp, user_id):
         """Handles GET requests"""
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
             table = ddb.Table('octank-demo-user-trips')
+            response = table.scan()
+        except ClientError as exception:
+            resp.status_code = falcon.HTTP_404
+            resp.body = exception.response['Error']['Message']
+        else:
+            resp.body = json.dumps(response['Items'])
+
+class SegmentResource(object):
+    """ Handling the segment route """
+    def on_get(self, req, resp, segment_id):
+        """Handles GET requests"""
+        try:
+            ddb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = ddb.Table('octank-demo-segments')
             response = table.scan()
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
