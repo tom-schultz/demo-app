@@ -6,7 +6,7 @@ class QuoteResource(object):
     """Sample class for API"""
 
     quote = {
-        'quote': 'I\'ve always been more interested in the future than in the past.',
+        'quote': 'I\'ve always been less interested in the future than in the past.',
         'author': 'Grace Hopper'
     }
 
