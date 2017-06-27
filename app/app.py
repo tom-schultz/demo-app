@@ -32,7 +32,12 @@ class TripsResource(object):
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']
         else:
-            resp.body = json.dumps(response['Items'])
+            trips = response['Items']
+
+            for trip in trips:
+                trip['segments'] = list(trip['segments'])
+
+            resp.body = json.dumps({'trips': trips})
 
 class SegmentResource(object):
     """ Handling the segment route """
@@ -41,12 +46,12 @@ class SegmentResource(object):
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
             table = ddb.Table('octank-demo-segments')
-            response = table.scan()
+            response = table.get_item(Key={'segment_id': segment_id})
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']
         else:
-            resp.body = json.dumps(response['Items'])
+            resp.body = json.dumps(list(response['Items']))
 
 class HealthCheck(object):
     """ Class for health check. """
