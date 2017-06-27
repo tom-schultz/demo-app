@@ -1,4 +1,4 @@
-""" Sample falcon app """
+""" """
 import json
 import falcon
 

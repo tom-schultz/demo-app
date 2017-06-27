@@ -9,6 +9,6 @@ cd $DIR/..
 
 chmod +x version.cfg
 . version.cfg && bumpversion --current-version $VERSION minor version.cfg
-pylint buggworks
+pylint app
 pylint test
 python -m unittest discover
