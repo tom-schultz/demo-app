@@ -12,13 +12,14 @@ class TripResource(object):
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
             table = ddb.Table('octank-demo-user-trips')
-            response = table.get_item(Key={'user_id': user_id})
+            response = table.get_item(Key={'trip_id': trip_id})
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']
         else:
-            item = response['Item']
-            resp.body = json.dumps(item)
+            trip = response['Item']
+            trip['segments'] = list(trip['segments'])
+            resp.body = json.dumps(trip)
 
 class TripsResource(object):
     """ Handling the trips route """
