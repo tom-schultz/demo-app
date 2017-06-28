@@ -15,4 +15,4 @@ docker tag octank-demo-app:latest 950174139509.dkr.ecr.us-west-2.amazonaws.com/o
 docker tag octank-demo-app:$VERSION 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:$VERSION
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:latest
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:$VERSION
-echo "{'version': '$VERSION'}" > build.json
+echo $"{\"version\": \"$VERSION\"}" > build.json
