@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Cluster:
+    Type: String
+    Default: octank-demo
+  TestTargetGroup:
+    Type: String
+    Default: arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c
+  TaskRole:
+    Type: String
+    Default: arn:aws:iam::950174139509:role/octank-ecs-service
+  ServiceRole:
+    Type: String
+    Default: arn:aws:iam::950174139509:role/ecsServiceRole 
+  ContainerPort:
+    Type: String
+    Default: 8080
+  ContainerName:
+    Type: String
+    Default: octank-demo-test-app
+  DesiredCount:
+    Type: String
+    Default: 1
+	Image:
+		Type: String
+		Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app
+	Tag:
+		Type: String
+		Default: latest
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: octank-app
+			NetworkMode: bridge
+			TaskRoleArn: !Ref TaskRole
+			ContainerDefinitions:
+				- Name: octank-app
+					Image: !Sub ${Image}:${Tag}
+					LogConfiguration:
+						Log Configuration
+					MemoryReservation: 128
+					PortMappings:
+						- ContainerPort: !Ref ContainerPort
+  TestService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: !Ref DesiredCount
+      LoadBalancers:
+      - ContainerName: !Ref ContainerName
+        ContainerPort: !Ref ContainerPort
+        TargetGroupArn: !Ref TestTargetGroup
+      Role: !Ref ServiceRole
+      TaskDefinition: !Ref TaskDefinition
