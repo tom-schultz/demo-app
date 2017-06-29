@@ -17,7 +17,7 @@ Parameters:
     Default: 8080
   ContainerName:
     Type: String
-    Default: octank-demo-test-app
+    Default: octank-app
   DesiredCount:
     Type: String
     Default: 1
@@ -35,7 +35,7 @@ Resources:
       NetworkMode: bridge
       TaskRoleArn: !Ref TaskRole
       ContainerDefinitions:
-        - Name: octank-app
+        - Name: !Ref ContainerName
           Image: !Sub ${Image}:${Tag}
           #LogConfiguration:
             #- LogDriver: awslogs
