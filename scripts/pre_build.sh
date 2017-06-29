@@ -12,3 +12,4 @@ chmod +x version.cfg
 pylint app
 pylint test
 python -m unittest discover
+aws cloudformation validate-template --template-body file://ecs-cfn.yml
