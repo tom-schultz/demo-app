@@ -27,6 +27,8 @@ Parameters:
   Tag:
     Type: String
     Default: latest
+  Hash:
+    Type: String
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -35,7 +37,7 @@ Resources:
       NetworkMode: bridge
       TaskRoleArn: !Ref TaskRole
       ContainerDefinitions:
-        - Name: !Ref ContainerName
+        - Name: !Sub ${ContainerName}-${Hash}
           Image: !Sub ${Image}:${Tag}
           #LogConfiguration:
             #- LogDriver: awslogs
@@ -49,7 +51,7 @@ Resources:
       Cluster: !Ref Cluster
       DesiredCount: !Ref DesiredCount
       LoadBalancers:
-      - ContainerName: !Ref ContainerName
+      - ContainerName: !Sub ${ContainerName}-${Hash}
         ContainerPort: !Ref ContainerPort
         TargetGroupArn: !Ref TestTargetGroup
       Role: !Ref ServiceRole
