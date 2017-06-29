@@ -63,7 +63,7 @@ class HealthCheck(object):
         resp.status = '200 OK'
 
 API = falcon.API()
-API.add_route('/{user_id}/trip/{trip_id}', TripResource())
-API.add_route('/{user_id}/trips', TripsResource())
+API.add_route('/user/{user_id}/trip/{trip_id}', TripResource())
+API.add_route('/user/{user_id}/trips', TripsResource())
 API.add_route('/health', HealthCheck())
 API.add_route('/segment/{segment_id}', SegmentResource())
