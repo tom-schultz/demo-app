@@ -9,6 +9,7 @@ cd $DIR/..
 
 chmod +x version.cfg
 . version.cfg && bumpversion --current-version $VERSION minor version.cfg
+. version.cfg && sed -i "s/$VERSION/$VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION/g" version.cfg
 pylint app
 pylint test
 python -m unittest discover
