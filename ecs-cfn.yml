@@ -21,27 +21,27 @@ Parameters:
   DesiredCount:
     Type: String
     Default: 1
-	Image:
-		Type: String
-		Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app
-	Tag:
-		Type: String
-		Default: latest
+  Image:
+    Type: String
+    Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app
+  Tag:
+    Type: String
+    Default: latest
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: octank-app
-			NetworkMode: bridge
-			TaskRoleArn: !Ref TaskRole
-			ContainerDefinitions:
-				- Name: octank-app
-					Image: !Sub ${Image}:${Tag}
-					LogConfiguration:
-						Log Configuration
-					MemoryReservation: 128
-					PortMappings:
-						- ContainerPort: !Ref ContainerPort
+      NetworkMode: bridge
+      TaskRoleArn: !Ref TaskRole
+      ContainerDefinitions:
+        - Name: octank-app
+          Image: !Sub ${Image}:${Tag}
+          LogConfiguration:
+            Log Configuration
+          MemoryReservation: 128
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
   TestService:
     Type: AWS::ECS::Service
     Properties:
