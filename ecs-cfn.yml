@@ -37,8 +37,9 @@ Resources:
       ContainerDefinitions:
         - Name: octank-app
           Image: !Sub ${Image}:${Tag}
-          LogConfiguration:
-            Log Configuration
+          #LogConfiguration:
+            #- LogDriver: awslogs
+              #Options: 
           MemoryReservation: 128
           PortMappings:
             - ContainerPort: !Ref ContainerPort
