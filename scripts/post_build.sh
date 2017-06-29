@@ -15,5 +15,4 @@ docker tag octank-demo-app:latest 950174139509.dkr.ecr.us-west-2.amazonaws.com/o
 docker tag octank-demo-app:$VERSION 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:$VERSION
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:latest
 docker push 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app:$VERSION
-HASH=$(git rev-parse --short HEAD)
-echo $"{\"version\": \"$VERSION\", \"hash\": \"$HASH\"}" > build.json
+echo $"{\"version\": \"$VERSION\", \"hash\": \"$CODEBUILD_RESOLVED_SOURCE_VERSION\"}" > build.json
