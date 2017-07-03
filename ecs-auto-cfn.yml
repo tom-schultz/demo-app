@@ -75,7 +75,7 @@ Resources:
   ServiceScalingOutPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: OctankStepPolicy
+      PolicyName: OctankStepOutPolicy
       PolicyType: StepScaling
       ScalingTargetId: !Ref ServiceScalingTarget
       StepScalingPolicyConfiguration:
@@ -103,7 +103,7 @@ Resources:
   ServiceScalingInPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: OctankStepPolicy
+      PolicyName: OctankStepInPolicy
       PolicyType: StepScaling
       ScalingTargetId: !Ref ServiceScalingTarget
       StepScalingPolicyConfiguration:
