@@ -72,12 +72,12 @@ Resources:
       RoleARN: arn:aws:iam::950174139509:role/ecsAutoscaleRole
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
-  ServiceScalingPolicy:
+  ServiceScalingOutPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
       PolicyName: OctankStepPolicy
       PolicyType: StepScaling
-      ScalingTargetId: !Ref 'ServiceScalingTarget'
+      ScalingTargetId: !Ref ServiceScalingTarget
       StepScalingPolicyConfiguration:
         AdjustmentType: PercentChangeInCapacity
         Cooldown: 60
@@ -85,9 +85,7 @@ Resources:
         StepAdjustments:
         - MetricIntervalLowerBound: 0
           ScalingAdjustment: 100
-        - MetricIntervalUpperBound: 0
-          ScalingAdjustment: -50
-  ServiceAlarmScaleUp:
+  ServiceAlarmScaleOut:
     Type: AWS::CloudWatch::Alarm
     Properties:
       EvaluationPeriods: '1'
@@ -95,14 +93,27 @@ Resources:
       Threshold: '80'
       AlarmDescription: Alarm if service CPU utilization goes over 80.
       Period: '60'
-      AlarmActions: [!Ref ServiceScalingPolicy]
+      AlarmActions: [!Ref ServiceScalingUpPolicy]
       Namespace: AWS/ECS
       Dimensions:
       - Name: ECSService
         Value: !Ref Service
       ComparisonOperator: GreaterThanThreshold
       MetricName: CPUUtilization
-  ServiceAlarmScaleDown:
+  ServiceScalingInPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: OctankStepPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: PercentChangeInCapacity
+        Cooldown: 60
+        MetricAggregationType: Average
+        StepAdjustments:
+        - MetricIntervalUpperBound: 0
+          ScalingAdjustment: -50
+  ServiceAlarmScaleIn:
     Type: AWS::CloudWatch::Alarm
     Properties:
       EvaluationPeriods: '1'
@@ -111,7 +122,7 @@ Resources:
       Threshold: '30'
       AlarmDescription: Alarm if service CPU utilization goes over 80.
       Period: '60'
-      AlarmActions: [!Ref ServiceScalingPolicy]
+      AlarmActions: [!Ref ServiceScalingInPolicy]
       Namespace: AWS/ECS
       Dimensions:
       - Name: ECSService
