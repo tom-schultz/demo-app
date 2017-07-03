@@ -107,6 +107,7 @@ Resources:
     Properties:
       EvaluationPeriods: '1'
       Statistic: Average
+      ComparisonOperator: LessThanThreshold
       Threshold: '30'
       AlarmDescription: Alarm if service CPU utilization goes over 80.
       Period: '60'
@@ -115,5 +116,4 @@ Resources:
       Dimensions:
       - Name: ECSService
         Value: !Ref Service
-      ComparisonOperator: GreaterThanThreshold
       MetricName: CPUUtilization
