@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Cluster:
+    Type: String
+    Default: octank-demo
+  TargetGroup:
+    Type: String
+    Default: arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c
+  TaskRole:
+    Type: String
+    Default: arn:aws:iam::950174139509:role/octank-ecs-service
+  ServiceRole:
+    Type: String
+    Default: arn:aws:iam::950174139509:role/ecsServiceRole 
+  ServiceMin:
+    Type: String
+    Default: 1
+  ServiceMax:
+    Type: String
+    Default: 1
+  ContainerPort:
+    Type: String
+    Default: 8080
+  ContainerName:
+    Type: String
+    Default: octank-app
+  DesiredCount:
+    Type: String
+    Default: 1
+  Image:
+    Type: String
+    Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app
+  Tag:
+    Type: String
+    Default: latest
+  Hash:
+    Type: String
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: octank-app
+      NetworkMode: bridge
+      TaskRoleArn: !Ref TaskRole
+      ContainerDefinitions:
+        - Name: !Sub ${ContainerName}-${Hash}
+          Image: !Sub ${Image}:${Tag}
+          #LogConfiguration:
+            #- LogDriver: awslogs
+              #Options: 
+          MemoryReservation: 128
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: !Ref DesiredCount
+      LoadBalancers:
+      - ContainerName: !Sub ${ContainerName}-${Hash}
+        ContainerPort: !Ref ContainerPort
+        TargetGroupArn: !Ref TargetGroup
+      Role: !Ref ServiceRole
+      TaskDefinition: !Ref TaskDefinition
+  ServiceScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    DependsOn: Service
+    Properties:
+      MaxCapacity: !Ref ServiceMax
+      MinCapacity: !Ref ServiceMin
+      ResourceId: !Join ['', [service/, !Ref Cluster, /, !GetAtt [Service, Name]]]
+      RoleARN: arn:aws:iam::950174139509:role/ecsAutoscaleRole
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+  ServiceScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: OctankStepPolicy
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref 'ServiceScalingTarget'
+      StepScalingPolicyConfiguration:
+        AdjustmentType: PercentChangeInCapacity
+        Cooldown: 60
+        MetricAggregationType: Average
+        StepAdjustments:
+        - MetricIntervalLowerBound: 0
+          ScalingAdjustment: 100
+        - MetricIntervalUpperBound: 0
+          ScalingAdjustment: -50
+  ServiceAlarmScaleUp:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: '1'
+      Statistic: Average
+      Threshold: '80'
+      AlarmDescription: Alarm if service CPU utilization goes over 80.
+      Period: '60'
+      AlarmActions: [!Ref ServiceScalingPolicy]
+      Namespace: AWS/ECS
+      Dimensions:
+      - Name: ECSService
+        Value: !Ref Service
+      ComparisonOperator: GreaterThanThreshold
+      MetricName: CPUUtilization
+  ServiceAlarmScaleDown:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: '1'
+      Statistic: Average
+      Threshold: '30'
+      AlarmDescription: Alarm if service CPU utilization goes over 80.
+      Period: '60'
+      AlarmActions: [!Ref ServiceScalingPolicy]
+      Namespace: AWS/ECS
+      Dimensions:
+      - Name: ECSService
+        Value: !Ref Service
+      ComparisonOperator: GreaterThanThreshold
+      MetricName: CPUUtilization

@@ -3,7 +3,7 @@ Parameters:
   Cluster:
     Type: String
     Default: octank-demo
-  TestTargetGroup:
+  TargetGroup:
     Type: String
     Default: arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c
   TaskRole:
@@ -12,6 +12,12 @@ Parameters:
   ServiceRole:
     Type: String
     Default: arn:aws:iam::950174139509:role/ecsServiceRole 
+  ServiceMin:
+    Type: String
+    Default: 1
+  ServiceMax:
+    Type: String
+    Default: 1
   ContainerPort:
     Type: String
     Default: 8080
@@ -45,7 +51,7 @@ Resources:
           MemoryReservation: 128
           PortMappings:
             - ContainerPort: !Ref ContainerPort
-  TestService:
+  Service:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !Ref Cluster
@@ -53,6 +59,6 @@ Resources:
       LoadBalancers:
       - ContainerName: !Sub ${ContainerName}-${Hash}
         ContainerPort: !Ref ContainerPort
-        TargetGroupArn: !Ref TestTargetGroup
+        TargetGroupArn: !Ref TargetGroup
       Role: !Ref ServiceRole
       TaskDefinition: !Ref TaskDefinition
