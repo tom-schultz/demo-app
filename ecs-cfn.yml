@@ -77,16 +77,17 @@ Resources:
         ZipFile: !Sub |
           var response = require('cfn-response');
           var AWS = require('aws-sdk');
+          AWS.config.update({region: 'us-west-2'});
+
           exports.handler = (event, context) => {
             console.log("Request received:\n", JSON.stringify(event));
             var physicalId = event.PhysicalResourceId || 'none';
             var success = data => response.send(event, context, response.SUCCESS, data, physicalId);
             var failed = e => response.send(event, context, response.FAILED, e, physicalId);
             if (event.RequestType == 'Create') {
-              var elb = new AWS.ELB();
-              elb.waitFor('instanceInService', {LoadBalancerName: 'arn:aws:elasticloadbalancing:us-west-2:950174139509:loadbalancer/app/octank-demo-test/88ee5502304788a2'}).promise().
-                then((data)=> success({}), (e)=> failed(e));
-            } else {
+              var alb = new AWS.ELBv2();
+              alb.describeTargetHealth({TargetGroupArn: "arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c"}, function(err, data){ if(err) failed(err); else success(data)})
+              } else {
               success({});
             }
           };
