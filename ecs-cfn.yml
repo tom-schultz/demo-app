@@ -84,7 +84,7 @@ Resources:
             var failed = e => response.send(event, context, response.FAILED, e, physicalId);
             if (event.RequestType == 'Create') {
               var elb = new AWS.ELB();
-              elb.waitFor('instanceInService', {LoadBalancerName: 'octank-demo-test'}).promise().
+              elb.waitFor('instanceInService', {LoadBalancerName: 'arn:aws:elasticloadbalancing:us-west-2:950174139509:loadbalancer/app/octank-demo-test/88ee5502304788a2'}).promise().
                 then((data)=> success({}), (e)=> failed(e));
             } else {
               success({});
