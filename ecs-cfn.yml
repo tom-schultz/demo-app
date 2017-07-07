@@ -112,5 +112,5 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
-              - 'elasticloadbalancing:DescribeInstanceHealth'
+              - 'elasticloadbalancing:DescribeTargetHealth'
               Resource: ['*']
