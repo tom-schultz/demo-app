@@ -60,7 +60,7 @@ class HealthCheck(object):
 
     def on_get(self, req, resp):
         """ Health check """
-        resp.status = '200 OK'
+        resp.status = falcon.HTTP_404
 
 API = falcon.API()
 API.add_route('/user/{user_id}/trip/{trip_id}', TripResource())
