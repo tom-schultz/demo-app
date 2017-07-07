@@ -64,7 +64,7 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
   InService:
     Type: Custom::InService
-		DependsOn: Service
+    DependsOn: Service
     Properties:
       ServiceToken: !GetAtt InServiceFunction.Arn
       LoadBalancerName: octank-demo-test
