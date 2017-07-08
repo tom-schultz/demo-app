@@ -94,13 +94,17 @@ Resources:
                   } else {
                     has_failed = false;
                     data.TargetHealthDescriptions.forEach(function(element) {
-                      if element.TargetHealth.State != 'healthy' {
-                        failed(data);
+                      if(element.TargetHealth.State != 'healthy') {
                         has_failed = true;
                       }
                     });
 
-                    if(!has_failed) success(data);
+                    if(!has_failed) {
+                      success(data);
+                      return;
+                    }
+
+                    failed(data);
                   }
               });
             } else {
