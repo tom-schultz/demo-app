@@ -68,6 +68,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt InServiceFunction.Arn
       LoadBalancerName: octank-demo-test
+      Hash: !Ref Hash
   InServiceFunction:
     Type: AWS::Lambda::Function
     Properties:
