@@ -127,4 +127,6 @@ Resources:
       Dimensions:
       - Name: ECSService
         Value: !Ref Service
+      - Name: ClusterName
+        Value: !Ref Cluster
       MetricName: CPUUtilization
