@@ -29,38 +29,33 @@ class TripsResource(object):
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
             table = ddb.Table('octank-demo-user-trips')
             response = table.scan()
+
+            segments_table = ddb.Table('octank-demo-segments')
+            segments = segments_table.scan()['Items']
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']
         else:
             trips = response['Items']
-            segments = {}
 
             for trip in trips:
                 trip['segments'] = list(trip['segments'])
 
-                for segment in trip['segments']:
-                    if segment not in segments:
-                        try:
-                            segments[segment] = get_segment(segment)
-                        except ClientError as exception:
-                            resp.status_code = falcon.HTTP_404
-                            resp.body = exception.response['Error']['Message']
+            segments_dict = {}
 
-            resp.body = json.dumps({'trips': trips, 'segments': segments})
-
-def get_segment(segment_id):
-    """ Grabbing a segment """
-    ddb = boto3.resource('dynamodb', region_name='us-west-2')
-    table = ddb.Table('octank-demo-segments')
-    return table.get_item(Key={'segment_id': segment_id})['Item']
+            for segment in segments:
+                segments_dict[segment['segment_id']] = segment
+                
+            resp.body = json.dumps({'trips': trips, 'segments': segments_dict})
 
 class SegmentResource(object):
     """ Handling the segment route """
     def on_get(self, req, resp, segment_id):
         """Handles GET requests"""
         try:
-            segment = get_segment(segment_id)
+            ddb = boto3.resource('dynamodb', region_name='us-west-2')
+            table = ddb.Table('octank-demo-segments')
+            segment = table.get_item(Key={'segment_id': segment_id})['Item']
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']

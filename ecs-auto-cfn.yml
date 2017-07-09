@@ -90,8 +90,8 @@ Resources:
     Properties:
       EvaluationPeriods: '1'
       Statistic: Average
-      Threshold: '80'
-      AlarmDescription: Alarm if service CPU utilization goes over 80.
+      Threshold: '30'
+      AlarmDescription: Alarm if service CPU utilization goes over 30.
       Period: '300'
       AlarmActions: [!Ref ServiceScalingOutPolicy]
       Namespace: AWS/ECS
@@ -121,8 +121,8 @@ Resources:
       EvaluationPeriods: '1'
       Statistic: Average
       ComparisonOperator: LessThanThreshold
-      Threshold: '30'
-      AlarmDescription: Alarm if service CPU utilization goes over 80.
+      Threshold: '10'
+      AlarmDescription: Alarm if service CPU utilization goes under 10.
       Period: '300'
       AlarmActions: [!Ref ServiceScalingInPolicy]
       Namespace: AWS/ECS
