@@ -34,26 +34,38 @@ class TripsResource(object):
             resp.body = exception.response['Error']['Message']
         else:
             trips = response['Items']
+            segments = {}
 
             for trip in trips:
                 trip['segments'] = list(trip['segments'])
 
-            resp.body = json.dumps({'trips': trips})
+                for segment in trip['segments']:
+                    if segment not in segments:
+                        try:
+                            segments[segment] = get_segment(segment)
+                        except ClientError as exception:
+                            resp.status_code = falcon.HTTP_404
+                            resp.body = exception.response['Error']['Message']
+
+            resp.body = json.dumps({'trips': trips, 'segments': segments})
+
+def get_segment(segment_id):
+    """ Grabbing a segment """
+    ddb = boto3.resource('dynamodb', region_name='us-west-2')
+    table = ddb.Table('octank-demo-segments')
+    return table.get_item(Key={'segment_id': segment_id})['Item']
 
 class SegmentResource(object):
     """ Handling the segment route """
     def on_get(self, req, resp, segment_id):
         """Handles GET requests"""
         try:
-            ddb = boto3.resource('dynamodb', region_name='us-west-2')
-            table = ddb.Table('octank-demo-segments')
-            response = table.get_item(Key={'segment_id': segment_id})
+            segment = get_segment(segment_id)
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
             resp.body = exception.response['Error']['Message']
         else:
-            print response['Item']
-            resp.body = json.dumps(response['Item'])
+            resp.body = json.dumps(segment)
 
 class HealthCheck(object):
     """ Class for health check. """
