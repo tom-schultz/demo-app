@@ -46,7 +46,7 @@ class TripsResource(object):
             for segment in segments:
                 segments_dict[segment['segment_id']] = segment
 
-            resp.body = json.dumps({'trips': trips, 'segments': segments_dict})
+            resp.body = json.dumps({'trips': trips, 'developer': 'tom', 'segments': segments_dict})
 
 class SegmentResource(object):
     """ Handling the segment route """
