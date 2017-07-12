@@ -44,6 +44,8 @@ class TripsResource(object):
             segments_dict = {}
 
             for segment in segments:
+                segment['origin'] += ' ({})'.format(segment['origin_code'])
+                segment['destination'] += ' ({})'.format(segment['dest_code'])
                 segments_dict[segment['segment_id']] = segment
 
             resp.body = json.dumps({'trips': trips, 'developer': 'tom', 'segments': segments_dict})
