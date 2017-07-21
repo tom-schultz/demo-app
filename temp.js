@@ -9,7 +9,7 @@ exports.handler = (event, context) => {
   var failed = e => response.send(event, context, response.FAILED, e, physicalId);
   if (event.RequestType == 'Create' || event.RequestType == 'Update') {
     var alb = new AWS.ELBv2();
-    alb.describeTargetHealth({TargetGroupArn: "arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c"},
+    alb.describeTargetHealth({TargetGroupArn: "arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/tamcorp-demo-test/39bb55a0948f263c"},
       function(err, data) {
         if(err) {
           failed(err);

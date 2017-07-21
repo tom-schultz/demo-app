@@ -11,7 +11,7 @@ class TripResource(object):
         """Handles GET requests"""
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
-            table = ddb.Table('octank-demo-user-trips')
+            table = ddb.Table('tamcorp-demo-user-trips')
             response = table.get_item(Key={'trip_id': trip_id})
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
@@ -27,10 +27,10 @@ class TripsResource(object):
         """Handles GET requests"""
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
-            table = ddb.Table('octank-demo-user-trips')
+            table = ddb.Table('tamcorp-demo-user-trips')
             response = table.scan()
 
-            segments_table = ddb.Table('octank-demo-segments')
+            segments_table = ddb.Table('tamcorp-demo-segments')
             segments = segments_table.scan()['Items']
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404
@@ -56,7 +56,7 @@ class SegmentResource(object):
         """Handles GET requests"""
         try:
             ddb = boto3.resource('dynamodb', region_name='us-west-2')
-            table = ddb.Table('octank-demo-segments')
+            table = ddb.Table('tamcorp-demo-segments')
             segment = table.get_item(Key={'segment_id': segment_id})['Item']
         except ClientError as exception:
             resp.status_code = falcon.HTTP_404

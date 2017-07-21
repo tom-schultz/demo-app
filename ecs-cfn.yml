@@ -2,13 +2,13 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   Cluster:
     Type: String
-    Default: octank-demo
+    Default: tamcorp-demo
   TargetGroup:
     Type: String
-    Default: arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c
+    Default: arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/tamcorp-demo-test/39bb55a0948f263c
   TaskRole:
     Type: String
-    Default: arn:aws:iam::950174139509:role/octank-ecs-service
+    Default: arn:aws:iam::950174139509:role/tamcorp-ecs-service
   ServiceRole:
     Type: String
     Default: arn:aws:iam::950174139509:role/ecsServiceRole 
@@ -23,13 +23,13 @@ Parameters:
     Default: 8080
   ContainerName:
     Type: String
-    Default: octank-app
+    Default: tamcorp-app
   DesiredCount:
     Type: String
     Default: 1
   Image:
     Type: String
-    Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/octank-demo-app
+    Default: 950174139509.dkr.ecr.us-west-2.amazonaws.com/tamcorp-demo-app
   Tag:
     Type: String
     Default: latest
@@ -39,7 +39,7 @@ Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: octank-app
+      Family: tamcorp-app
       NetworkMode: bridge
       TaskRoleArn: !Ref TaskRole
       ContainerDefinitions:
@@ -67,7 +67,7 @@ Resources:
     #DependsOn: Service
     #Properties:
       #ServiceToken: !GetAtt InServiceFunction.Arn
-      #LoadBalancerName: octank-demo-test
+      #LoadBalancerName: tamcorp-demo-test
       #Hash: !Ref Hash
   #InServiceFunction:
     #Type: AWS::Lambda::Function
@@ -87,7 +87,7 @@ Resources:
             #var failed = e => response.send(event, context, response.FAILED, e, physicalId);
             #if (event.RequestType == 'Create' || event.RequestType == 'Update') {
               #var alb = new AWS.ELBv2();
-              #alb.describeTargetHealth({TargetGroupArn: "arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/octank-demo-test/39bb55a0948f263c"},
+              #alb.describeTargetHealth({TargetGroupArn: "arn:aws:elasticloadbalancing:us-west-2:950174139509:targetgroup/tamcorp-demo-test/39bb55a0948f263c"},
                 #function(err, data) {
                   #if(err) {
                     #failed(err);
